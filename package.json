@@ -1,0 +1,7 @@
+{
+  "name": "cinema-br-nuvio",
+  "version": "4.0.0",
+  "private": true,
+  "engines": { "node": "22.x" },
+  "scripts": { "start": "node local.js", "test": "node test.js" }
+}
