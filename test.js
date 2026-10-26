@@ -3,9 +3,9 @@ const assert=require('node:assert/strict');
 process.env.TMDB_API_KEY='test-only-key';
 const app=require('./api/index.js');
 const manifest=require('./manifest.json');
-const movie={id:1058424,title:'Hope: O Primeiro Impacto',overview:'Sinopse',poster_path:'/poster.jpg',backdrop_path:'/bg.jpg',release_date:'2026-10-01',vote_average:6.8,genres:[{name:'Ficção científica'}]};
-const noImdb={id:1101412,title:'A Queda 2: No Limite',poster_path:'/fall.jpg',release_date:'2026-10-26',genres:[]};
-const tv={id:303,name:'Série Exemplo',poster_path:'/series.jpg',first_air_date:'2025-02-20',seasons:[{season_number:1}],genres:[]};
+const movie={id:1058424,title:'Hope: O Primeiro Impacto',overview:'Sinopse',poster_path:'/poster.jpg',backdrop_path:'/bg.jpg',release_date:'2026-10-01',vote_average:6.8,genre_ids:[878,28],genres:[{name:'Ficção científica'}]};
+const noImdb={id:1101412,title:'A Queda 2: No Limite',poster_path:'/fall.jpg',release_date:'2026-10-26',genre_ids:[53],genres:[]};
+const tv={id:303,name:'Série Exemplo',poster_path:'/series.jpg',first_air_date:'2025-02-20',genre_ids:[18],seasons:[{season_number:1}],genres:[]};
 const realFetch=global.fetch;
 global.fetch=async target=>{
  const p=new URL(target).pathname;let data;
@@ -28,10 +28,19 @@ global.fetch=async target=>{
  const base=`http://127.0.0.1:${server.address().port}`;
  const get=async route=>{const r=await realFetch(base+route);assert.equal(r.status,200,route);return r.json();};
  try{
-  const m=await get('/manifest.json');assert.equal(m.version,'2.3.0');assert.equal(m.catalogs.length,8);
+  const m=await get('/manifest.json');assert.equal(m.version,'2.4.0');assert.equal(m.catalogs.length,8);
   assert.deepEqual(m.resources[1].idPrefixes,['tt','tmdb:']);
   const health=await get('/health');assert.equal(health.tmdbConfigured,true);
-  const cat=await get('/catalog/movie/cinema_ano_atual.json');
+  const catResponse=await realFetch(base+'/catalog/movie/cinema_ano_atual.json');
+  assert.match(catResponse.headers.get('cache-control'),/s-maxage=21600/);
+  const cat=await catResponse.json();
+  assert.ok(m.catalogs.every(c=>c.extra.some(e=>e.name==='genre'&&e.options.length>5)));
+  const sci=await get('/catalog/movie/cinema_ano_atual/genre=Fic%C3%A7%C3%A3o%20cient%C3%ADfica.json');
+  assert.equal(sci.metas.length,1);assert.equal(sci.metas[0].id,'tt7654321');
+  const sus=await get('/catalog/movie/cinema_ano_atual/genre=Suspense.json');
+  assert.equal(sus.metas.length,1);assert.equal(sus.metas[0].id,'tmdb:1101412');
+  const invalid=await get('/catalog/movie/cinema_ano_atual/genre=INVALID.json');assert.deepEqual(invalid.metas,[]);
+  const drama=await get('/catalog/series/series_em_alta/genre=Drama.json');assert.equal(drama.metas.length,1);
   assert.equal(cat.metas[0].id,'tt7654321');assert.equal(cat.metas[0].type,'movie');
   assert.equal(cat.metas[1].id,'tmdb:1101412');
   for(const item of cat.metas){

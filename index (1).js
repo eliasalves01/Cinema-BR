@@ -4,13 +4,16 @@ const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'..','manifest.jso
 const key=process.env.TMDB_API_KEY;
 const token=process.env.TMDB_READ_TOKEN;
 const cache=new Map();
+const CATALOG_TTL=21600; // 6 horas no CDN da Vercel
+const MOVIE_GENRES={"Ação": 28, "Aventura": 12, "Animação": 16, "Comédia": 35, "Crime": 80, "Documentário": 99, "Drama": 18, "Família": 10751, "Fantasia": 14, "Faroeste": 37, "Ficção científica": 878, "História": 36, "Mistério": 9648, "Música": 10402, "Romance": 10749, "Suspense": 53, "Terror": 27, "Guerra": 10752};
+const SERIES_GENRES={"Ação e aventura": 10759, "Animação": 16, "Comédia": 35, "Crime": 80, "Documentário": 99, "Drama": 18, "Família": 10751, "Fantasia e ficção científica": 10765, "Infantil": 10762, "Mistério": 9648, "Notícias": 10763, "Reality": 10764, "Novela": 10766, "Talk show": 10767, "Guerra e política": 10768};
 const imdbCache=new Map();
 const studios={universal:33,warner:174,paramountpic:4,sony:34,disneystudio:2,a24:41077};
 const aliases={netflix:['Netflix'],max:['Max','HBO Max'],paramount:['Paramount Plus','Paramount+'],apple:['Apple TV Plus','Apple TV+'],prime:['Amazon Prime Video','Prime Video'],disney:['Disney Plus','Disney+'],globoplay:['Globoplay']};
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
 const isImdb=id=>/^tt\d+$/.test(id||'');
 const isTmdb=id=>/^tmdb:\d+$/.test(id||'');
-function send(res,code,data,seconds=300){res.statusCode=code;res.setHeader('content-type','application/json; charset=utf-8');res.setHeader('access-control-allow-origin','*');res.setHeader('cache-control',`public, max-age=${seconds}, s-maxage=${seconds}`);res.end(JSON.stringify(data));}
+function send(res,code,data,seconds=300){res.statusCode=code;res.setHeader('content-type','application/json; charset=utf-8');res.setHeader('access-control-allow-origin','*');res.setHeader('cache-control',seconds>0?`public, max-age=0, s-maxage=${seconds}`:'no-store');res.end(JSON.stringify(data));}
 async function tmdb(route,parameters={}){
  if(!key&&!token)throw Error('TMDB_NOT_CONFIGURED: defina TMDB_API_KEY na Vercel');
  const u=new URL('https://api.themoviedb.org/3'+route);u.searchParams.set('language','pt-BR');if(key)u.searchParams.set('api_key',key);
@@ -116,13 +119,23 @@ async function handler(req,res){
    const [,type,id,arg]=cat;
    if(!manifest.catalogs.some(c=>c.type===type&&c.id===id))return send(res,404,{error:'CATALOG_NOT_FOUND'});
    const spec=rule(type,id);if(!spec)return send(res,404,{error:'CATALOG_RULE_NOT_FOUND'});
-   const q=new URLSearchParams(arg||'');const rawSkip=Number(q.get('skip')||0);const skip=Number.isFinite(rawSkip)?Math.max(0,rawSkip):0;
+   const q=new URLSearchParams(arg||'');
+   const requestedGenre=q.get('genre');const genres=type==='movie'?MOVIE_GENRES:SERIES_GENRES;
+   if(requestedGenre!==null&&!Object.hasOwn(genres,requestedGenre))return send(res,200,{metas:[]},CATALOG_TTL);
+   const genreId=requestedGenre===null?null:genres[requestedGenre];
+   const rawSkip=Number(q.get('skip')||0);const skip=Number.isFinite(rawSkip)?Math.max(0,rawSkip):0;
    const page=Math.min(500,Math.max(1,Math.floor(skip/20)+1));const args={...spec.params,page};
    if(spec.provider){const pid=await provider(type==='movie'?'movie':'tv',spec.provider);if(!pid)return send(res,200,{metas:[]});args.with_watch_providers=String(pid);}
+   // Em filtros, usamos discover quando possivel para paginar por genero no TMDB.
+   // Catálogos de tendência e cinema mantêm suas regras e são filtrados
+   // localmente por genre_ids, para não misturar resultados fora do escopo.
+   const discover=spec.route.startsWith('/discover/');
+   if(genreId!==null&&discover)args.with_genres=String(genreId);
    const found=await tmdb(spec.route,args);let titles=(found.results||[]).filter(x=>x.poster_path);
+   if(genreId!==null&&!discover)titles=titles.filter(x=>(x.genre_ids||[]).includes(genreId));
    if(spec.cinemaYear)titles=titles.filter(x=>String(x.release_date||'').startsWith(String(spec.cinemaYear)));
    const uniq=new Set();titles=titles.filter(x=>{if(uniq.has(x.id))return false;uniq.add(x.id);return true;});
-   return send(res,200,{metas:await makeCatalogMetas(titles,type)},180);
+   return send(res,200,{metas:await makeCatalogMetas(titles,type)},CATALOG_TTL);
   }
   const meta=route.match(/^\/meta\/(movie|series)\/([^/]+)\.json$/);
   if(meta){const [,type,id]=meta;

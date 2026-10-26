@@ -1,25 +1,22 @@
-# Cinema BR — Correção Stremio v2.3.0
+# Cinema BR 2.4 — atualização automática e filtros de gênero
 
-Este pacote mantém os **8 catálogos do projeto Home Leve** presente no ZIP recebido. Ele não contém os 43 catálogos de versões anteriores.
+## Publicação
+Substitua os arquivos do repositório GitHub pelos arquivos deste ZIP, **incluindo `api/index.js` e `manifest.json`**. Não altere a variável `TMDB_API_KEY` já configurada na Vercel. Faça redeploy e reinstale **somente Cinema BR** no Stremio após confirmar `/manifest.json` versão `2.4.0`.
 
-## Mudanças
-- Para cada filme e série, tenta obter o ID IMDb cadastrado no TMDB; quando existir, o catálogo retorna `tt...` e os detalhes são consultados por `/meta/movie/tt...json` ou `/meta/series/tt...json`.
-- Quando o IMDb não existir, o catálogo mantém `tmdb:...`, que também é aceito pela rota `meta`. Outros addons de reprodução podem não reconhecer esse fallback.
-- A rota `meta` devolve **exatamente o mesmo ID solicitado**, evitando divergência entre catálogo e detalhes.
-- Filmes não recebem campo `videos` (sem temporadas); séries recebem episódios no formato `ID:temporada:episodio`.
-- Manifesto especifica o recurso `meta` e seus prefixos `tt` e `tmdb:`, com versão 2.3.0.
-- Rota `/health` informa a versão publicada e se a variável TMDB está configurada.
+## Como funciona
+- Os **8 catálogos Home Leve** permanecem, agora com `genre` e `skip` declarados no manifesto.
+- O filtro em **Descobrir / Discover** do Stremio consulta `/catalog/movie/cinema_ano_atual/genre=A%C3%A7%C3%A3o.json` ou `/catalog/series/series_em_alta/genre=Drama.json`.
+- Filmes e séries continuam atualizados dinamicamente pelo TMDB, sem atualizar o GitHub.
+- Os **resultados de catálogo** usam `Cache-Control: public, max-age=0, s-maxage=21600` (6 horas no CDN Vercel). A primeira visita após vencimento do cache consulta a fonte novamente. A própria interface Stremio pode guardar cache adicional e não garante troca visual exatamente no relógio.
+- Filtros de gêneros em catálogos `discover` são realizados pelo próprio TMDB antes da paginação. Em catálogos `trending`, `popular` e `now_playing`, filtramos os resultados da página retornada. Isso pode produzir páginas com menos de 20 títulos ou vazias para gêneros raros; evita descaracterizar o catálogo original.
+- IDs do catálogo e metadados foram mantidos como na versão 2.3. O código não gera temporadas para filmes.
 
-## Publicação na Vercel
-1. Faça backup do repositório e substitua seus arquivos pelos deste ZIP, **mantendo a pasta `api`**.
-2. Confirme que `TMDB_API_KEY` ou `TMDB_READ_TOKEN` está configurada no projeto Vercel (nunca exponha essas credenciais no GitHub).
-3. Publique e abra `https://SEU-DOMINIO/health` — precisa mostrar `"version":"2.3.0"`.
-4. Abra `https://SEU-DOMINIO/catalog/movie/cinema_ano_atual.json` e anote um `id` de filme.
-5. Abra `https://SEU-DOMINIO/meta/movie/ID.json` substituindo `ID` pelo ID obtido. `meta.id` deve ser idêntico ao do catálogo.
-6. No Stremio, remova **apenas o Cinema BR** e instale novamente usando `https://SEU-DOMINIO/manifest.json`, para renovar o manifesto; não remova Cinemeta nem os demais addons.
+## Verificação
+- `/health` → campo `version`: `2.4.0` e 8 catálogos
+- `/manifest.json` → cada catálogo declara `genre`
+- `/catalog/movie/cinema_ano_atual/genre=A%C3%A7%C3%A3o.json` → retorna `metas`
+- `/catalog/series/series_em_alta/genre=Drama.json` → retorna `metas`
+- No Stremio, vá em **Descobrir**, selecione **Cinema BR**, tipo **Filmes** ou **Séries**, e o gênero.
 
-## Limites importantes
-- `npm test` cobre respostas com dados simulados do TMDB. A execução **não** comprova funcionamento real da API TMDB, Vercel ou do aplicativo Stremio.
-- Se o catálogo publicado continuar retornando predominantemente `tmdb:` após essa atualização, isso pode indicar ausência de IDs IMDb no TMDB ou que a versão antiga ainda está publicada. Verifique `/health`.
-- Este addon entrega catálogos e metadados, **não** oferece vídeos ou streams. A reprodução depende da disponibilidade e compatibilidade dos outros addons.
-- Consultas de IDs IMDb podem aumentar o tempo de carregamento dos catálogos; o cache é local à instância do servidor.
+## Testes
+`npm test` com Node.js 22. Testes com respostas TMDB simuladas, sem acessar conta privada ou a implantação ao vivo.

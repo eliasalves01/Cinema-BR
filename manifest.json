@@ -1,8 +1,8 @@
 {
   "id": "br.com.catalogoptbr.nuvio",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "name": "Cinema BR | Home Leve",
-  "description": "Catálogos PT-BR com detalhes TMDB, IDs IMDb quando disponíveis e compatibilidade com o protocolo do Stremio.",
+  "description": "Cinema BR: 8 catálogos PT-BR com atualização de 6h, filtros por gênero e metadados TMDB/IMDb.",
   "resources": [
     "catalog",
     {
@@ -28,7 +28,33 @@
       "name": "🎟️ No cinema — ano atual",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     },
@@ -38,7 +64,33 @@
       "name": "📈 Filmes em alta",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     },
@@ -48,7 +100,33 @@
       "name": "🆕 Lançamentos de filmes",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     },
@@ -58,7 +136,33 @@
       "name": "🔥 Filmes populares",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     },
@@ -68,7 +172,30 @@
       "name": "📈 Séries em alta",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação e aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia e ficção científica",
+            "Infantil",
+            "Mistério",
+            "Notícias",
+            "Reality",
+            "Novela",
+            "Talk show",
+            "Guerra e política"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     },
@@ -78,7 +205,30 @@
       "name": "🆕 Novas séries",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação e aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia e ficção científica",
+            "Infantil",
+            "Mistério",
+            "Notícias",
+            "Reality",
+            "Novela",
+            "Talk show",
+            "Guerra e política"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     },
@@ -88,7 +238,33 @@
       "name": "🇧🇷 Cinema brasileiro",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     },
@@ -98,7 +274,30 @@
       "name": "🇧🇷 Séries brasileiras",
       "extra": [
         {
-          "name": "skip"
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação e aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia e ficção científica",
+            "Infantil",
+            "Mistério",
+            "Notícias",
+            "Reality",
+            "Novela",
+            "Talk show",
+            "Guerra e política"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
         }
       ]
     }
