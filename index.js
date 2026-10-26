@@ -60,7 +60,7 @@ function rule(type,id){
  const today=new Date();const year=today.getUTCFullYear();
  const common={
   cinema_ano_atual:{route:'/movie/now_playing',params:{region:'BR'},cinemaYear:year},
-  filmes_populares:{route:'/movie/popular'},filmes_em_alta:{route:'/discover/movie',params:{sort_by:'popularity.desc','vote_count.gte':10,'primary_release_date.lte':today.toISOString().slice(0,10)}},
+  filmes_populares:{route:'/movie/popular'},filmes_em_alta:{route:'/discover/movie',params:{sort_by:'popularity.desc','primary_release_date.lte':today.toISOString().slice(0,10)}},
   filmes_lancamentos:{route:'/discover/movie',params:{sort_by:'popularity.desc','primary_release_date.lte':today.toISOString().slice(0,10),'vote_count.gte':5}},
   filmes_aclamados:{route:'/discover/movie',params:{sort_by:'popularity.desc','vote_average.gte':7.5,'vote_count.gte':300,'primary_release_date.lte':today.toISOString().slice(0,10)}},
   filmes_brasileiros:{route:'/discover/movie',params:{with_origin_country:'BR',...defaultP}},
@@ -126,7 +126,7 @@ async function handler(req,res){
    const genreId=requestedGenre===null?null:genres[requestedGenre];
    const requestedYear=q.get('year');
    if(requestedYear!==null){
-    if(id!=='filmes_lancamentos'||!/^\d{4}$/.test(requestedYear)||Number(requestedYear)<1970||Number(requestedYear)>new Date().getUTCFullYear())return send(res,200,{metas:[]},CATALOG_TTL);
+    if(!['filmes_lancamentos','filmes_em_alta'].includes(id)||!/^\d{4}$/.test(requestedYear)||Number(requestedYear)<1970||Number(requestedYear)>new Date().getUTCFullYear())return send(res,200,{metas:[]},CATALOG_TTL);
    }
    const rawSkip=Number(q.get('skip')||0);
    const skip=Number.isFinite(rawSkip)?Math.max(0,Math.floor(rawSkip)):0;
@@ -134,14 +134,19 @@ async function handler(req,res){
    const page=Math.floor(skip/20)+1;const args={...spec.params,page};
    if(requestedYear!==null){args.primary_release_year=requestedYear;args['primary_release_date.lte']=Math.min(new Date().toISOString().slice(0,10),requestedYear+'-12-31');}
    if(spec.provider){const pid=await provider(type==='movie'?'movie':'tv',spec.provider);if(!pid)return send(res,200,{metas:[]});args.with_watch_providers=String(pid);}
-   // Em filtros, usamos discover quando possivel para paginar por genero no TMDB.
-   // Catálogos de tendência e cinema mantêm suas regras e são filtrados
-   // localmente por genre_ids, para não misturar resultados fora do escopo.
+   // Os filtros são enviados ao próprio TMDB ANTES da paginação.
    const discover=spec.route.startsWith('/discover/');
    if(genreId!==null&&discover)args.with_genres=String(genreId);
-   const found=await tmdb(spec.route,args);let titles=(found.results||[]).filter(x=>x.poster_path);
-   // O TMDB tem 20 itens por página; respeitar deslocamentos que não sejam múltiplos de 20.
+   // Stremio usa páginas de até 100 itens. Em Filmes em Alta carregamos até
+   // cinco páginas do TMDB (20 títulos por página) por solicitação do Stremio.
+   // Isso amplia a variedade em cada gênero e permite avançar por 'skip'.
+   const wide=id==='filmes_em_alta';
+   const first=page, last=Math.min(500,page+(wide?4:0));
+   const blocks=await Promise.all(Array.from({length:last-first+1},(_,i)=>tmdb(spec.route,{...args,page:first+i})));
+   let titles=blocks.flatMap(found=>found.results||[]).filter(x=>x.poster_path);
+   // Respeita skips não múltiplos de 20 e não ultrapassa uma página de 100.
    if(skip%20)titles=titles.slice(skip%20);
+   if(wide)titles=titles.slice(0,100);
    if(genreId!==null&&!discover)titles=titles.filter(x=>(x.genre_ids||[]).includes(genreId));
    if(spec.cinemaYear)titles=titles.filter(x=>String(x.release_date||'').startsWith(String(spec.cinemaYear)));
    const uniq=new Set();titles=titles.filter(x=>{if(uniq.has(x.id))return false;uniq.add(x.id);return true;});

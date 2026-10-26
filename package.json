@@ -1,12 +1,12 @@
 {
   "name": "cinema-br-nuvio",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "private": true,
   "engines": {
     "node": "22.x"
   },
   "scripts": {
     "start": "node local.js",
-    "test": "node test_v26.js"
+    "test": "node test_v27.js"
   }
 }

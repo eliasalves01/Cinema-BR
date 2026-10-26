@@ -1,33 +1,19 @@
-# Cinema BR v2.6 — 9 catálogos para Stremio
+# Cinema BR 2.7.0 — Filmes em Alta ampliado
 
-Atualização a partir da v2.5. Preserve `TMDB_API_KEY` (ou `TMDB_READ_TOKEN`) nas variáveis de ambiente da Vercel.
+- Mantém os **9 catálogos** da versão 2.6.1.
+- **Filmes em Alta:** filtros de **gênero + ano** combináveis, selecionados no manifesto, com resultados ordenados por **popularidade** diretamente no TMDB (`/discover/movie`).
+- Removido o mínimo de 10 avaliações deste catálogo para ampliar a quantidade de títulos disponíveis.
+- Uma página de **Filmes em Alta** reúne até **100 filmes** (cinco páginas de resultados TMDB). `skip=100` continua na próxima leva. O TMDB limita a paginação a 500 páginas por consulta.
+- **Filmes Lançamentos** mantém seu filtro por gênero e ano. Metadados, IDs, outros catálogos e cache CDN de seis horas não foram alterados.
 
-## Catálogos (na ordem)
+## Como publicar
 
-1. Filmes em Alta — catálogo amplo, por popularidade, gênero e paginação
-2. Filmes Lançamentos — por popularidade, gênero e ano
-3. Aclamados pela Crítica — avaliação TMDB >= 7,5 com 300 ou mais avaliações, ordenado por popularidade
-4. Novos na Netflix — filmes disponíveis em assinatura no Brasil, lançados desde 1º de janeiro de dois anos antes do ano atual
-5. Novos no Prime Video — mesmo critério
-6. Novos no Disney+ — mesmo critério
-7. Novos no Apple TV+ — mesmo critério
-8. Séries em Alta — por popularidade
-9. Novas Séries — estreias dos últimos dois anos, por popularidade
+Coloque o conteúdo desta pasta na **raiz do repositório GitHub** conectado à Vercel. Mantenha `api/index.js`; se houver um `index.js` antigo na raiz, remova-o para evitar conflito. Configure `TMDB_API_KEY` (ou `TMDB_READ_TOKEN`) nas variáveis de ambiente da Vercel. Depois do deploy, reinstale apenas o addon Cinema BR no Stremio se os filtros não forem atualizados.
 
-**Nota sobre “Novos na plataforma”:** o TMDB não oferece a data de entrada no catálogo de streaming na API Discover. O filtro é de *lançamento recente do filme*, com disponibilidade de assinatura no Brasil, não “adicionado recentemente à plataforma”. A oferta é dinâmica, conforme os provedores cadastrados no TMDB.
+## Verificar
 
-## Ordenação
+- `https://cinema-br.vercel.app/health` deve mostrar `2.7.0` e 9 catálogos.
+- `/catalog/movie/filmes_em_alta/genre=Terror&year=2024.json`
+- `/catalog/movie/filmes_em_alta/genre=Terror&year=2024&skip=100.json`
 
-Todas as consultas Discover usadas pelos nove catálogos têm `sort_by=popularity.desc`, inclusive com filtro de gênero ou ano. Metadados `meta/movie/...` e `meta/series/...` preservam o ID recebido do catálogo.
-
-## Cache
-
-`CATALOG_TTL=21600` (seis horas) em `api/index.js`. Cache da Vercel é revalidado na próxima requisição após expiração, não por tarefa em segundo plano.
-
-## Publicação
-
-Publique os arquivos na raiz do repositório conectado à Vercel (`api/index.js`, `manifest.json`, `vercel.json`, etc). Confira `/health` (versão 2.6.0 e 9 catálogos), depois `/manifest.json`. Reinstale somente o addon Cinema BR no Stremio se a lista antiga continuar.
-
-## Testes locais
-
-Rode `node test_v26.js`. Não consulta a API externa: valida o roteamento, popularidade, gêneros, ano, fornecedores e metadados com dados simulados.
+**Observações:** o TMDB fornece rankings de popularidade, não um histórico fixo: resultados e posições variam com o tempo. O ano é um extra personalizado; a interface de algumas versões do Stremio pode não mostrar esse seletor mesmo que a rota aceite `year`. Consultar e enriquecer até 100 títulos por requisição pode ficar mais lento na primeira carga, dependendo dos limites do TMDB e da Vercel. Testado localmente com dados simulados; é necessário validar em produção.
