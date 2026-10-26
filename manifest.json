@@ -1,8 +1,8 @@
 {
   "id": "br.com.catalogoptbr.nuvio",
   "version": "2.1.0",
-  "name": "Cinema BR | Catálogo Completo",
-  "description": "Catálogos PT-BR: cinema em cartaz no ano atual, filmes e séries por streaming brasileiro, produções por estúdio, tendências, gêneros e rankings. Metadados e capas por servidor TMDB; sem links de reprodução.",
+  "name": "Cinema BR | Home Leve",
+  "description": "Oito catálogos principais em PT-BR, para navegação mais leve no Nuvio. Outros catálogos preservados em manifesto completo.",
   "resources": [
     "catalog",
     "meta"
@@ -16,16 +16,6 @@
       "type": "movie",
       "id": "cinema_ano_atual",
       "name": "🎟️ No cinema — ano atual",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "filmes_populares",
-      "name": "🔥 Filmes populares",
       "extra": [
         {
           "name": "skip"
@@ -54,68 +44,8 @@
     },
     {
       "type": "movie",
-      "id": "filmes_brasileiros",
-      "name": "🇧🇷 Cinema brasileiro",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "filmes_bem_avaliados",
-      "name": "⭐ Filmes mais bem avaliados",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "filmes_acao",
-      "name": "💥 Ação e aventura",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "filmes_comedia",
-      "name": "😂 Comédias",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "filmes_terror",
-      "name": "👻 Terror e suspense",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "filmes_animacao",
-      "name": "👨‍👩‍👧 Animações e família",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "series_populares",
-      "name": "📺 Séries populares",
+      "id": "filmes_populares",
+      "name": "🔥 Filmes populares",
       "extra": [
         {
           "name": "skip"
@@ -143,299 +73,19 @@
       ]
     },
     {
+      "type": "movie",
+      "id": "filmes_brasileiros",
+      "name": "🇧🇷 Cinema brasileiro",
+      "extra": [
+        {
+          "name": "skip"
+        }
+      ]
+    },
+    {
       "type": "series",
       "id": "series_brasileiras",
       "name": "🇧🇷 Séries brasileiras",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "series_bem_avaliadas",
-      "name": "⭐ Séries mais bem avaliadas",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "series_doramas",
-      "name": "🌸 Doramas",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "series_animes",
-      "name": "🎌 Animes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "universal_movie",
-      "name": "🎞️ Universal Pictures — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "universal_series",
-      "name": "🎞️ Universal Pictures — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "warner_movie",
-      "name": "🎞️ Warner Bros. — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "warner_series",
-      "name": "🎞️ Warner Bros. — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "paramountpic_movie",
-      "name": "🎞️ Paramount Pictures — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "paramountpic_series",
-      "name": "🎞️ Paramount Pictures — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "sony_movie",
-      "name": "🎞️ Sony Pictures — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "sony_series",
-      "name": "🎞️ Sony Pictures — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "disneystudio_movie",
-      "name": "🎞️ Walt Disney Pictures — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "disneystudio_series",
-      "name": "🎞️ Walt Disney Pictures — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "a24_movie",
-      "name": "🎞️ A24 — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "a24_series",
-      "name": "🎞️ A24 — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "netflix_movie",
-      "name": "📺 Netflix — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "netflix_series",
-      "name": "📺 Netflix — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "max_movie",
-      "name": "📺 HBO Max / Max — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "max_series",
-      "name": "📺 HBO Max / Max — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "paramount_movie",
-      "name": "📺 Paramount+ — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "paramount_series",
-      "name": "📺 Paramount+ — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "apple_movie",
-      "name": "📺 Apple TV+ — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "apple_series",
-      "name": "📺 Apple TV+ — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "prime_movie",
-      "name": "📺 Prime Video — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "prime_series",
-      "name": "📺 Prime Video — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "disney_movie",
-      "name": "📺 Disney+ — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "disney_series",
-      "name": "📺 Disney+ — Séries",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "globoplay_movie",
-      "name": "📺 Globoplay — Filmes",
-      "extra": [
-        {
-          "name": "skip"
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "globoplay_series",
-      "name": "📺 Globoplay — Séries",
       "extra": [
         {
           "name": "skip"
