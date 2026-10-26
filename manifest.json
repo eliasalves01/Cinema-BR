@@ -1,8 +1,8 @@
 {
   "id": "br.com.catalogoptbr.nuvio",
-  "version": "2.4.0",
-  "name": "Cinema BR | Home Leve",
-  "description": "Cinema BR: 8 catálogos PT-BR com atualização de 6h, filtros por gênero e metadados TMDB/IMDb.",
+  "version": "2.6.0",
+  "name": "Cinema BR | 9 Catálogos",
+  "description": "9 catálogos PT-BR; listas por popularidade, filtros de gênero e ano, filmes bem avaliados, plataformas BR, cache CDN de 6 horas.",
   "resources": [
     "catalog",
     {
@@ -24,44 +24,8 @@
   "catalogs": [
     {
       "type": "movie",
-      "id": "cinema_ano_atual",
-      "name": "🎟️ No cinema — ano atual",
-      "extra": [
-        {
-          "name": "genre",
-          "isRequired": false,
-          "options": [
-            "Ação",
-            "Aventura",
-            "Animação",
-            "Comédia",
-            "Crime",
-            "Documentário",
-            "Drama",
-            "Família",
-            "Fantasia",
-            "Faroeste",
-            "Ficção científica",
-            "História",
-            "Mistério",
-            "Música",
-            "Romance",
-            "Suspense",
-            "Terror",
-            "Guerra"
-          ],
-          "optionsLimit": 1
-        },
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
       "id": "filmes_em_alta",
-      "name": "📈 Filmes em alta",
+      "name": "📈 Filmes em Alta",
       "extra": [
         {
           "name": "genre",
@@ -97,7 +61,107 @@
     {
       "type": "movie",
       "id": "filmes_lancamentos",
-      "name": "🆕 Lançamentos de filmes",
+      "name": "🆕 Filmes Lançamentos",
+      "extra": [
+        {
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "year",
+          "isRequired": false,
+          "options": [
+            "2026",
+            "2025",
+            "2024",
+            "2023",
+            "2022",
+            "2021",
+            "2020",
+            "2019",
+            "2018",
+            "2017",
+            "2016",
+            "2015",
+            "2014",
+            "2013",
+            "2012",
+            "2011",
+            "2010",
+            "2009",
+            "2008",
+            "2007",
+            "2006",
+            "2005",
+            "2004",
+            "2003",
+            "2002",
+            "2001",
+            "2000",
+            "1999",
+            "1998",
+            "1997",
+            "1996",
+            "1995",
+            "1994",
+            "1993",
+            "1992",
+            "1991",
+            "1990",
+            "1989",
+            "1988",
+            "1987",
+            "1986",
+            "1985",
+            "1984",
+            "1983",
+            "1982",
+            "1981",
+            "1980",
+            "1979",
+            "1978",
+            "1977",
+            "1976",
+            "1975",
+            "1974",
+            "1973",
+            "1972",
+            "1971",
+            "1970"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "filmes_aclamados",
+      "name": "🏆 Aclamados pela Crítica",
       "extra": [
         {
           "name": "genre",
@@ -132,8 +196,116 @@
     },
     {
       "type": "movie",
-      "id": "filmes_populares",
-      "name": "🔥 Filmes populares",
+      "id": "netflix_movie",
+      "name": "🆕 Novos na Netflix",
+      "extra": [
+        {
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "prime_movie",
+      "name": "🆕 Novos no Prime Video",
+      "extra": [
+        {
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "disney_movie",
+      "name": "🆕 Novos no Disney+",
+      "extra": [
+        {
+          "name": "genre",
+          "isRequired": false,
+          "options": [
+            "Ação",
+            "Aventura",
+            "Animação",
+            "Comédia",
+            "Crime",
+            "Documentário",
+            "Drama",
+            "Família",
+            "Fantasia",
+            "Faroeste",
+            "Ficção científica",
+            "História",
+            "Mistério",
+            "Música",
+            "Romance",
+            "Suspense",
+            "Terror",
+            "Guerra"
+          ],
+          "optionsLimit": 1
+        },
+        {
+          "name": "skip",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "type": "movie",
+      "id": "apple_movie",
+      "name": "🆕 Novos no Apple TV+",
       "extra": [
         {
           "name": "genre",
@@ -169,7 +341,7 @@
     {
       "type": "series",
       "id": "series_em_alta",
-      "name": "📈 Séries em alta",
+      "name": "📈 Séries em Alta",
       "extra": [
         {
           "name": "genre",
@@ -202,76 +374,7 @@
     {
       "type": "series",
       "id": "series_lancamentos",
-      "name": "🆕 Novas séries",
-      "extra": [
-        {
-          "name": "genre",
-          "isRequired": false,
-          "options": [
-            "Ação e aventura",
-            "Animação",
-            "Comédia",
-            "Crime",
-            "Documentário",
-            "Drama",
-            "Família",
-            "Fantasia e ficção científica",
-            "Infantil",
-            "Mistério",
-            "Notícias",
-            "Reality",
-            "Novela",
-            "Talk show",
-            "Guerra e política"
-          ],
-          "optionsLimit": 1
-        },
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "movie",
-      "id": "filmes_brasileiros",
-      "name": "🇧🇷 Cinema brasileiro",
-      "extra": [
-        {
-          "name": "genre",
-          "isRequired": false,
-          "options": [
-            "Ação",
-            "Aventura",
-            "Animação",
-            "Comédia",
-            "Crime",
-            "Documentário",
-            "Drama",
-            "Família",
-            "Fantasia",
-            "Faroeste",
-            "Ficção científica",
-            "História",
-            "Mistério",
-            "Música",
-            "Romance",
-            "Suspense",
-            "Terror",
-            "Guerra"
-          ],
-          "optionsLimit": 1
-        },
-        {
-          "name": "skip",
-          "isRequired": false
-        }
-      ]
-    },
-    {
-      "type": "series",
-      "id": "series_brasileiras",
-      "name": "🇧🇷 Séries brasileiras",
+      "name": "🆕 Novas Séries",
       "extra": [
         {
           "name": "genre",
