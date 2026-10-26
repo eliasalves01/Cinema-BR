@@ -1,23 +1,25 @@
-# Cinema BR — Correção de detalhes no Stremio/Nuvio
+# Cinema BR — Correção Stremio v2.3.0
 
-**Esta versão contém 8 catálogos (Home Leve)**, iguais aos enviados no ZIP. Não restaura automaticamente os 43 catálogos de versões anteriores.
+Este pacote mantém os **8 catálogos do projeto Home Leve** presente no ZIP recebido. Ele não contém os 43 catálogos de versões anteriores.
 
-## Correção
-- Consulta IDs IMDb pelo endpoint TMDB `external_ids` para cada filme ou série.
-- Entrega o campo `id` como `tt...` quando disponível; fallback `tmdb:...` para itens sem IMDb.
-- As URLs `/meta/movie/tt...json` e `/meta/series/tt...json` retornam IDs consistentes.
-- Vídeos de séries usam `tt...:temporada:episodio`, para os addons compatíveis identificarem episódios.
-- Não fornece streams; use fontes independentes de conteúdo autorizado.
+## Mudanças
+- Para cada filme e série, tenta obter o ID IMDb cadastrado no TMDB; quando existir, o catálogo retorna `tt...` e os detalhes são consultados por `/meta/movie/tt...json` ou `/meta/series/tt...json`.
+- Quando o IMDb não existir, o catálogo mantém `tmdb:...`, que também é aceito pela rota `meta`. Outros addons de reprodução podem não reconhecer esse fallback.
+- A rota `meta` devolve **exatamente o mesmo ID solicitado**, evitando divergência entre catálogo e detalhes.
+- Filmes não recebem campo `videos` (sem temporadas); séries recebem episódios no formato `ID:temporada:episodio`.
+- Manifesto especifica o recurso `meta` e seus prefixos `tt` e `tmdb:`, com versão 2.3.0.
+- Rota `/health` informa a versão publicada e se a variável TMDB está configurada.
 
-## Atualização
-1. Substitua os arquivos existentes do repositório GitHub pelos arquivos deste ZIP. **Mantenha `api/index.js` e `index.js` idênticos**.
-2. Não envie sua chave TMDB ao GitHub; mantenha `TMDB_API_KEY` nas variáveis da Vercel.
-3. Faça deploy e teste `/health`, `/catalog/movie/filmes_populares.json` e `/meta/movie/tt0133093.json`.
-4. No catálogo, o campo `id` deve começar com `tt` para títulos com IMDb.
-5. Remova e reinstale o addon na conta Stremio/Nuvio se a lista antiga continuar em cache.
+## Publicação na Vercel
+1. Faça backup do repositório e substitua seus arquivos pelos deste ZIP, **mantendo a pasta `api`**.
+2. Confirme que `TMDB_API_KEY` ou `TMDB_READ_TOKEN` está configurada no projeto Vercel (nunca exponha essas credenciais no GitHub).
+3. Publique e abra `https://SEU-DOMINIO/health` — precisa mostrar `"version":"2.3.0"`.
+4. Abra `https://SEU-DOMINIO/catalog/movie/cinema_ano_atual.json` e anote um `id` de filme.
+5. Abra `https://SEU-DOMINIO/meta/movie/ID.json` substituindo `ID` pelo ID obtido. `meta.id` deve ser idêntico ao do catálogo.
+6. No Stremio, remova **apenas o Cinema BR** e instale novamente usando `https://SEU-DOMINIO/manifest.json`, para renovar o manifesto; não remova Cinemeta nem os demais addons.
 
-## Observações
-- As consultas extras à API TMDB podem tornar a primeira abertura dos catálogos mais lenta; há cache em memória e paralelismo limitado.
-- Alguns títulos não têm ID IMDb no TMDB e continuam como `tmdb:`.
-- A disponibilidade de links de reprodução depende de addons separados.
-- Para testar localmente: `npm test`. Os testes usam dados TMDB simulados; não validam credenciais ou conectividade real.
+## Limites importantes
+- `npm test` cobre respostas com dados simulados do TMDB. A execução **não** comprova funcionamento real da API TMDB, Vercel ou do aplicativo Stremio.
+- Se o catálogo publicado continuar retornando predominantemente `tmdb:` após essa atualização, isso pode indicar ausência de IDs IMDb no TMDB ou que a versão antiga ainda está publicada. Verifique `/health`.
+- Este addon entrega catálogos e metadados, **não** oferece vídeos ou streams. A reprodução depende da disponibilidade e compatibilidade dos outros addons.
+- Consultas de IDs IMDb podem aumentar o tempo de carregamento dos catálogos; o cache é local à instância do servidor.

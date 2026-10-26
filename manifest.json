@@ -1,11 +1,21 @@
 {
   "id": "br.com.catalogoptbr.nuvio",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "name": "Cinema BR | Home Leve",
-  "description": "Catálogos PT-BR Home Leve com capas TMDB e IDs IMDb para compatibilidade com detalhes e addons de streams no Stremio/Nuvio.",
+  "description": "Catálogos PT-BR com detalhes TMDB, IDs IMDb quando disponíveis e compatibilidade com o protocolo do Stremio.",
   "resources": [
     "catalog",
-    "meta"
+    {
+      "name": "meta",
+      "types": [
+        "movie",
+        "series"
+      ],
+      "idPrefixes": [
+        "tt",
+        "tmdb:"
+      ]
+    }
   ],
   "types": [
     "movie",
@@ -92,10 +102,6 @@
         }
       ]
     }
-  ],
-  "idPrefixes": [
-    "tt",
-    "tmdb:"
   ],
   "behaviorHints": {
     "configurable": false
