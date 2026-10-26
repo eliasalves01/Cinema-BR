@@ -1,8 +1,8 @@
 {
   "id": "br.com.catalogoptbr.nuvio",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "name": "Cinema BR | Home Leve",
-  "description": "Oito catálogos principais em PT-BR, para navegação mais leve no Nuvio. Outros catálogos preservados em manifesto completo.",
+  "description": "Catálogos PT-BR Home Leve com capas TMDB e IDs IMDb para compatibilidade com detalhes e addons de streams no Stremio/Nuvio.",
   "resources": [
     "catalog",
     "meta"

@@ -19,7 +19,31 @@ async function tmdb(route,parameters={}){
  const data=await r.json();cache.set(ck,{until:Date.now()+300000,data});return data;
 }
 const photo=(p,size)=>p?`https://image.tmdb.org/t/p/${size}${p}`:undefined;
-function convert(x,type){return {id:`tmdb:${x.id}`,type,name:x.title||x.name||x.original_title||x.original_name||'Sem título',poster:photo(x.poster_path,'w500'),background:photo(x.backdrop_path,'w1280'),description:x.overview||'',releaseInfo:(x.release_date||x.first_air_date||'').slice(0,4)||'',imdbRating:x.vote_average?Number(x.vote_average).toFixed(1):undefined};}
+function convert(x,type,publicId){return {id:publicId||`tmdb:${x.id}`,type,name:x.title||x.name||x.original_title||x.original_name||'Sem título',poster:photo(x.poster_path,'w500'),background:photo(x.backdrop_path,'w1280'),description:x.overview||'',releaseInfo:(x.release_date||x.first_air_date||'').slice(0,4)||'',imdbRating:x.vote_average?Number(x.vote_average).toFixed(1):undefined};}
+// Resolve IMDb IDs so other Stremio stream addons can recognize the titles.
+const imdbCache=new Map();
+async function imdbFor(tmdbId,type){
+ const k=`${type}:${tmdbId}`;
+ if(imdbCache.has(k))return imdbCache.get(k);
+ try{
+  const x=await tmdb(`/${type==='movie'?'movie':'tv'}/${tmdbId}/external_ids`,{});
+  const id=/^tt\d+$/.test(x.imdb_id||'')?x.imdb_id:null;
+  if(id)imdbCache.set(k,id);
+  return id;
+ }catch{return null;}
+}
+async function resolveCatalogMetas(titles,type){
+ // Bound parallel work to limit overload and keep catalog responses responsive.
+ const results=[];
+ for(let i=0;i<titles.length;i+=6){
+  const chunk=await Promise.all(titles.slice(i,i+6).map(async x=>{
+   const imdb=await imdbFor(x.id,type);
+   return convert(x,type,imdb||`tmdb:${x.id}`);
+  }));
+  results.push(...chunk);
+ }
+ return results;
+}
 async function provider(kind,name){const response=await tmdb(`/watch/providers/${kind}`);const possibilities=aliases[name]||[];
  const list=(response.results||[]).filter(p=>p.display_priorities?.BR!==undefined);return list.find(p=>possibilities.some(a=>norm(a)===norm(p.provider_name)))?.provider_id;
 }
@@ -66,16 +90,16 @@ async function handler(req,res){
  let titles=(found.results||[]).filter(x=>x.poster_path);
  if(spec.cinemaYear)titles=titles.filter(x=>String(x.release_date||'').startsWith(String(spec.cinemaYear)));
  const uniq=new Set();titles=titles.filter(x=>{if(uniq.has(x.id))return false;uniq.add(x.id);return true});
- return send(res,200,{metas:titles.map(x=>convert(x,type))});
+ return send(res,200,{metas:await resolveCatalogMetas(titles,type)});
  }
  const meta=route.match(/^\/meta\/(movie|series)\/([^/]+)\.json$/);
  if(meta){const [,type,id]=meta;let tmdbid;if(id.startsWith('tmdb:'))tmdbid=id.slice(5);
  else if(/^tt\d+$/.test(id)){const f=await tmdb(`/find/${id}`,{external_source:'imdb_id'});tmdbid=(type==='movie'?f.movie_results:f.tv_results)?.[0]?.id;}
  if(!tmdbid)return send(res,404,{meta:null,error:'UNKNOWN_ID'});
- const kind=type==='movie'?'movie':'tv';const item=await tmdb(`/${kind}/${tmdbid}`);const obj=convert(item,type);obj.genres=(item.genres||[]).map(x=>x.name);
- if(type==='series'){const seasons=(item.seasons||[]).filter(s=>s.season_number>0).slice(0,20);
+ const kind=type==='movie'?'movie':'tv';const item=await tmdb(`/${kind}/${tmdbid}`);const imdb=/^tt\d+$/.test(id)?id:await imdbFor(tmdbid,type);const obj=convert(item,type,imdb||`tmdb:${tmdbid}`);obj.genres=(item.genres||[]).map(x=>x.name);if(imdb)obj.imdb_id=imdb;
+ if(type==='series'){const seasons=(item.seasons||[]).filter(s=>s.season_number>0).slice(0,10);
  const details=await Promise.all(seasons.map(s=>tmdb(`/tv/${tmdbid}/season/${s.season_number}`).catch(()=>({episodes:[]}))));
- obj.videos=details.flatMap((d,i)=>(d.episodes||[]).map(e=>({id:`tmdb:${tmdbid}:${seasons[i].season_number}:${e.episode_number}`,title:e.name||`Episódio ${e.episode_number}`,season:seasons[i].season_number,episode:e.episode_number,released:e.air_date?e.air_date+'T00:00:00.000Z':undefined,thumbnail:photo(e.still_path,'w780')})));
+ obj.videos=details.flatMap((d,i)=>(d.episodes||[]).map(e=>({id:`${imdb||`tmdb:${tmdbid}`}:${seasons[i].season_number}:${e.episode_number}`,title:e.name||`Episódio ${e.episode_number}`,season:seasons[i].season_number,episode:e.episode_number,released:e.air_date?e.air_date+'T00:00:00.000Z':undefined,thumbnail:photo(e.still_path,'w780')})));
  }
  return send(res,200,{meta:obj});}
  return send(res,404,{error:'ROUTE_NOT_FOUND',path:route});

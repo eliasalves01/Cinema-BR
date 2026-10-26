@@ -8,7 +8,8 @@ const oldFetch=global.fetch;
 global.fetch=async (u)=>{
   const pathname=new URL(u).pathname;
   let out;
-  if(pathname.includes('/watch/providers/')) out={results:[{provider_id:8,provider_name:'Netflix',display_priorities:{BR:1}}]};
+  if(pathname.endsWith('/external_ids'))out={imdb_id:pathname.includes('/tv/')?'tt7654321':'tt1234567'};
+  else if(pathname.includes('/watch/providers/')) out={results:[{provider_id:8,provider_name:'Netflix',display_priorities:{BR:1}}]};
   else if(pathname.startsWith('/3/find/'))out={movie_results:[fakeMovie],tv_results:[]};
   else if(pathname==='/3/movie/101')out=fakeMovie;
   else if(pathname==='/3/tv/303')out={...fakeTV,seasons:[]};
@@ -20,13 +21,13 @@ global.fetch=async (u)=>{
  const root=`http://127.0.0.1:${server.address().port}`;
  const test=async(url,key)=>{let response=await oldFetch(root+url);assert.equal(response.status,200,`${url} returned ${response.status}`);let data=await response.json();assert.ok(Object.hasOwn(data,key),url);return data;};
  try{
-  const man=await test('/manifest.json','catalogs');assert.equal(man.catalogs.length,43);
-  assert.equal((await test('/health','ok')).catalogs,43);
-  for(const [type,id] of [['movie','cinema_ano_atual'],['movie','filmes_populares'],['series','series_populares'],['movie','netflix_movie'],['series','netflix_series'],['movie','universal_movie']]){
-    const catalog=await test(`/catalog/${type}/${id}.json`,'metas'); assert.ok(catalog.metas.length>0,`${id} empty`);assert.ok(catalog.metas[0].poster);console.log('PASS',id);
+  const man=await test('/manifest.json','catalogs');assert.equal(man.catalogs.length,8);
+  assert.equal((await test('/health','ok')).catalogs,8);
+  for(const [type,id] of [['movie','cinema_ano_atual'],['movie','filmes_populares'],['series','series_em_alta'],['movie','filmes_em_alta'],['series','series_brasileiras']]){
+    const catalog=await test(`/catalog/${type}/${id}.json`,'metas'); assert.ok(catalog.metas.length>0,`${id} empty`);assert.ok(catalog.metas[0].poster);assert.match(catalog.metas[0].id,/^tt\d+$/);console.log('PASS',id);
   }
-  const meta=await test('/meta/movie/tmdb:101.json','meta'); assert.equal(meta.meta.id,'tmdb:101');
-  const ids=new Set(man.catalogs.map(c=>c.type+'|'+c.id));assert.equal(ids.size,43);
-  console.log('PASS 43 catálogos + manifest + /health + capas + metadados');
+  const meta=await test('/meta/movie/tmdb:101.json','meta'); assert.equal(meta.meta.id,'tt1234567');
+  const ids=new Set(man.catalogs.map(c=>c.type+'|'+c.id));assert.equal(ids.size,8);
+  console.log('PASS 8 catálogos + manifest + /health + capas + metadados');
  } finally{server.close();global.fetch=oldFetch;}
 })().catch(e=>{console.error(e);process.exitCode=1;});
